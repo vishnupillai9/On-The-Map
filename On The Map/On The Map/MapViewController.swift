@@ -13,7 +13,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    var students: [UdacityStudent] = [UdacityStudent]()
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +25,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func getData() {
         ParseClient.sharedInstance().getStudentLocations { (success, studentData, errorString) -> Void in
             if success {
-                self.students = studentData!
+                self.appDelegate.students = studentData!
                 dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                    for student in self.students {
+                    for student in self.appDelegate.students {
                         //Add pin to the map for every student
                         var location = CLLocationCoordinate2DMake(student.latitude!, student.longitude!)
                         var pin = MKPointAnnotation()

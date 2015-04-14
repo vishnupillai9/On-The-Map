@@ -12,7 +12,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     @IBOutlet weak var tableView: UITableView!
     
-    var students: [UdacityStudent] = [UdacityStudent]()
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +24,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func getData() {
         ParseClient.sharedInstance().getStudentLocations { (success, studentData, errorString) -> Void in
             if success {
-                self.students = studentData!
+                self.appDelegate.students = studentData!
                 dispatch_async(dispatch_get_main_queue()) { () -> Void in
                     self.tableView.reloadData()
                 }
@@ -53,7 +53,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let reuseIdentifier = "StudentTableViewCell"
-        let student = students[indexPath.row]
+        let student = appDelegate.students[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! UITableViewCell
         
         //Display name of the student in cell
@@ -73,11 +73,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //Returns the count of students
-        return students.count
+        return appDelegate.students.count
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let student = students[indexPath.row]
+        let student = appDelegate.students[indexPath.row]
         //Opens the media url in Safari
         UIApplication.sharedApplication().openURL(NSURL(string: student.mediaURL!)!)
     }

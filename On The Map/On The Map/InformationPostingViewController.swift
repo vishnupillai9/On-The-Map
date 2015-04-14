@@ -147,28 +147,40 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
         }
     }
     
+    func isValidURL(url: NSURL) -> Bool {
+        let request = NSURLRequest(URL: url)
+        return NSURLConnection.canHandleRequest(request)
+    }
     
     @IBAction func submitButtonTouch(sender: UIButton) {
         if let media = NSURL(string: mediaTextView.text) {
-            ParseClient.sharedInstance().postStudentLocations(firstName!, lastName: lastName!, mapString: textView.text, mediaURL: mediaTextView.text, latitude: lat!, longitude: long!) { (success, responseMessage) -> Void in
-                if success {
-                    println(responseMessage!)
-                    dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                        self.dismissViewControllerAnimated(true, completion: nil)
+            if isValidURL(media) {
+                ParseClient.sharedInstance().postStudentLocations(firstName!, lastName: lastName!, mapString: textView.text, mediaURL: mediaTextView.text, latitude: lat!, longitude: long!) { (success, responseMessage) -> Void in
+                    if success {
+                        println(responseMessage!)
+                        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                        }
+                    } else {
+                        //Alert view to let the user know post failed
+                        var alert = UIAlertController(title: "Post Failed", message: "Failed to post your request to the server", preferredStyle: UIAlertControllerStyle.Alert)
+                        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+                        self.presentViewController(alert, animated: true, completion: nil)
                     }
-                } else {
-                    //Alert view to let the user know post failed
-                    var alert = UIAlertController(title: "Post Failed", message: "Failed to post your request to the server", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
                 }
+            } else {
+                invalidURLAlert()
             }
         } else {
-            //Display alert view if URL provided is invalid
-            var alert = UIAlertController(title: "Invalid URL", message: "Please enter a valid URL to continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            invalidURLAlert()
         }
+    }
+    
+    func invalidURLAlert() {
+        //Display alert view if URL provided is invalid
+        var alert = UIAlertController(title: "Invalid URL", message: "Please enter a valid URL to continue.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     //Add pin and zoom into location
