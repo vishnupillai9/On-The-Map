@@ -13,7 +13,7 @@ extension ParseClient {
     func getStudentLocations(completionHandler: (success: Bool, studentData: [UdacityStudent]?, errorString: String?) -> Void) {
         
         let task = taskForGETMethod { (JSONResult, error) -> Void in
-            if let error = error? {
+            if let error = error {
                 //Pass error message using completion handler
                 completionHandler(success: false, studentData: nil, errorString: "Could not get student locations")
             } else {
@@ -43,7 +43,7 @@ extension ParseClient {
         ]
         
         let task = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in
-            if let error = error? {
+            if let error = error {
                 //Pass error message using completion handler
                 completionHandler(success: false, responseMessage: "Could not post location")
             } else {

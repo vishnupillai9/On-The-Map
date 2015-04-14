@@ -33,7 +33,7 @@ class ParseClient: NSObject {
         
         //4. Make request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
-            if let error = downloadError? {
+            if let error = downloadError {
                 let newError = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {
@@ -66,7 +66,7 @@ class ParseClient: NSObject {
         
         //4. Make request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
-            if let error = downloadError? {
+            if let error = downloadError {
                 let newError = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {

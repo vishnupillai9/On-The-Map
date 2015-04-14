@@ -80,7 +80,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
         
         //Adding detail button
-        var button = UIButton.buttonWithType(UIButtonType.DetailDisclosure) as UIButton
+        var button = UIButton.buttonWithType(UIButtonType.DetailDisclosure) as! UIButton
         pinView?.rightCalloutAccessoryView = button
         
         return pinView
@@ -96,7 +96,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func pinButtonTouch() {
         //Present information posting view when pin button is touched
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController") as InformationPostingViewController
+        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController") as! InformationPostingViewController
         self.presentViewController(controller, animated: true, completion: nil)
     }
     

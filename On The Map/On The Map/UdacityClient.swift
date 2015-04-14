@@ -41,7 +41,7 @@ class UdacityClient : NSObject {
         //4. Make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
             //5/6. Parse and use the data
-            if let error = downloadError? {
+            if let error = downloadError {
                 let newError = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {
@@ -69,7 +69,7 @@ class UdacityClient : NSObject {
         
         //4. Make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
-            if let error = downloadError? {
+            if let error = downloadError {
                 let newError = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {

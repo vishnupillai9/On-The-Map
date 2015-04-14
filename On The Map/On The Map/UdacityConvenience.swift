@@ -21,7 +21,7 @@ extension UdacityClient {
         ]
         
         let task = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in
-            if let error = error? {
+            if let error = error {
                 //Pass error message using completion handler. Ask user to check connection
                 completionHandler(success: false, sessionID: nil, errorString: "Connection Error. Please check your connection and try again.")
             } else {
@@ -52,7 +52,7 @@ extension UdacityClient {
     
     func getPublicUserData(completionHandler: (success: Bool, firstName: String?, lastName: String?, errorString: String?) -> Void) {
         let task = taskForGETMethod { (JSONResult, error) -> Void in
-            if let error = error? {
+            if let error = error {
                 //Pass error message using completion handler
                 completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Could not get user data")
             } else {

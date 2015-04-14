@@ -31,7 +31,7 @@ class CommonClient {
         var parsingError: NSError? = nil
         let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
         
-        if let error = parsingError? {
+        if let error = parsingError {
             completionHandler(result: nil, error: error)
         } else {
             completionHandler(result: parsedResult, error: nil)

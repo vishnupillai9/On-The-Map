@@ -111,7 +111,7 @@ class LoginViewController: UIViewController {
     
     func displayError(errorString: String?) {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            if let errorString = errorString? {
+            if let errorString = errorString {
                 self.debugTextLabel.text = errorString
             }
         })
@@ -122,7 +122,7 @@ class LoginViewController: UIViewController {
             //Upon successful login, clear the debug label
             self.debugTextLabel.text = ""
             //Segue to MapTableVC
-            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as UINavigationController
+            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
             self.presentViewController(controller, animated: true, completion: nil)
         })
     }
@@ -130,7 +130,7 @@ class LoginViewController: UIViewController {
     @IBAction func signUpButtonTouch(sender: UIButton) {
         //If sign up button is touched, present the udacity sign up page using a web view
         
-        let signUpViewController = self.storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as UINavigationController
+        let signUpViewController = self.storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
         
             self.presentViewController(signUpViewController, animated: true, completion: nil)
     }

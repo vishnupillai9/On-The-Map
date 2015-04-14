@@ -54,7 +54,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let reuseIdentifier = "StudentTableViewCell"
         let student = students[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! UITableViewCell
         
         //Display name of the student in cell
         if let firstName = student.firstName {
@@ -84,7 +84,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func pinButtonTouch() {
         //Present information posting vc when + button is touched
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController") as InformationPostingViewController
+        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController") as! InformationPostingViewController
         self.presentViewController(controller, animated: true, completion: nil)
     }
     

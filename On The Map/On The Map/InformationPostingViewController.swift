@@ -114,7 +114,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
                 
             } else if placemarks.count > 0 {
                 //Get latitude and longitude from address string
-                let placemark = placemarks[0] as CLPlacemark
+                let placemark = placemarks[0] as! CLPlacemark
                 let coordinates = placemark.location.coordinate
                 
                 lat = coordinates.latitude
