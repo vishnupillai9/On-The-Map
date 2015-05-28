@@ -12,9 +12,6 @@ class UdacityClient : NSObject {
     
     var session: NSURLSession
 
-    var username: String?
-    var password: String?
-    
     var sessionID: String? = nil
     var userID: String? = nil
     

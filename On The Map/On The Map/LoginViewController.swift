@@ -8,13 +8,13 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
-    @IBOutlet weak var facebookLoginButton: UIButton!
+    @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
     @IBOutlet weak var debugTextLabel: UILabel!
     
     var tapRecognizer: UITapGestureRecognizer?
@@ -22,6 +22,11 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        
+        facebookLoginButton.readPermissions = ["public_profile", "email"]
+        facebookLoginButton.delegate = self
+        
+        FBSDKLoginManager().logOut()
     }
 
     func configureUI() {
@@ -95,11 +100,14 @@ class LoginViewController: UIViewController {
             self.debugTextLabel.text = "Email/Password Empty."
         } else {
             //If not, proceed to get the session ID
+            let jsonBody : [String : AnyObject] = [
+                UdacityClient.JSONBodyKeys.Udacity : [
+                    UdacityClient.JSONBodyKeys.Username : "\(self.emailTextField.text)",
+                    UdacityClient.JSONBodyKeys.Password : "\(self.passwordTextField.text)"
+                ]
+            ]
             
-            UdacityClient.sharedInstance().username = self.emailTextField.text
-            UdacityClient.sharedInstance().password = self.passwordTextField.text
-            
-            UdacityClient.sharedInstance().getSessionID { (success, sessionID, errorString) -> Void in
+            UdacityClient.sharedInstance().getSessionID(jsonBody) { (success, sessionID, errorString) -> Void in
                 if success {
                     self.completeLogin()
                 } else {
@@ -133,6 +141,29 @@ class LoginViewController: UIViewController {
         let signUpViewController = self.storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
         
             self.presentViewController(signUpViewController, animated: true, completion: nil)
+    }
+    
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+        
+        if error != nil {
+            println("Facebook login error")
+        } else if result.isCancelled {
+            println("Facebook login error (Cancelled)")
+        } else {
+            let jsonBody = ["facebook_mobile": ["access_token": "\(FBSDKAccessToken.currentAccessToken().tokenString)"]]
+            UdacityClient.sharedInstance().getSessionID(jsonBody, completionHandler: { (success, sessionID, errorString) -> Void in
+                if success {
+                    self.completeLogin()
+                } else {
+                    self.displayError(errorString)
+                }
+            })
+        }
+        
+    }
+    
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        println("User logged out")
     }
     
 }

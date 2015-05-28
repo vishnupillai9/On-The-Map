@@ -59,7 +59,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         self.parentViewController!.navigationItem.title = "On The Map"
         
         //Create and set left bar button item
-        self.parentViewController!.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Bordered, target: self, action: "pinButtonTouch")
+        self.parentViewController!.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "pinButtonTouch")
         
         //Create and set right bar button item
         self.parentViewController!.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshData")

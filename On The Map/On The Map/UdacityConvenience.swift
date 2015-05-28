@@ -10,17 +10,9 @@ import Foundation
 
 extension UdacityClient {
     
-    func getSessionID(completionHandler: (success: Bool, sessionID: String?, errorString: String?) -> Void) {
+    func getSessionID(jsonBody: [String: AnyObject], completionHandler: (success: Bool, sessionID: String?, errorString: String?) -> Void) {
         
-        //JSON, which contains the username and password
-        let jsonBody : [String : AnyObject] = [
-            UdacityClient.JSONBodyKeys.Udacity : [
-                UdacityClient.JSONBodyKeys.Username : "\(username!)",
-                UdacityClient.JSONBodyKeys.Password : "\(password!)"
-            ]
-        ]
-        
-        let task = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in
+        let task = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in            
             if let error = error {
                 //Pass error message using completion handler. Ask user to check connection
                 completionHandler(success: false, sessionID: nil, errorString: "Connection Error. Please check your connection and try again.")
@@ -57,6 +49,7 @@ extension UdacityClient {
                 completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Could not get user data")
             } else {
                 if let userData = JSONResult.valueForKey(JSONResponseKeys.UserData) as? NSDictionary {
+                    println(userData)
                     let firstName = userData[JSONResponseKeys.FirstName] as? String
                     let lastName = userData[JSONResponseKeys.LastName] as? String
                     //Pass first name & last name to vc using completion handler
