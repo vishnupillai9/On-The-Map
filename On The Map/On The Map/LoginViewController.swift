@@ -16,6 +16,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
     @IBOutlet weak var debugTextLabel: UILabel!
+    @IBOutlet weak var loginActivityIndicator: UIActivityIndicatorView!
     
     var tapRecognizer: UITapGestureRecognizer?
 
@@ -32,7 +33,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     func configureUI() {
         
         //Set background to orange gradient
-        self.view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clearColor()
         
         let colorTop = UIColor(red: 0.973, green: 0.518, blue: 0.055, alpha: 1.0).CGColor
         let colorBottom = UIColor(red: 0.957, green: 0.353, blue: 0.039, alpha: 1.0).CGColor
@@ -42,7 +43,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         backgroundGradient.locations = [0.0, 1.0]
         backgroundGradient.frame = view.frame
         
-        self.view.layer.insertSublayer(backgroundGradient, atIndex: 0)
+        view.layer.insertSublayer(backgroundGradient, atIndex: 0)
         
         //Left padding the email text field
         let emailTextFieldPaddingViewFrame = CGRectMake(0.0, 0.0, 13.0, 0.0)
@@ -69,17 +70,17 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     func addKeyboardDismissRecognizer() {
         //Add tap gesture recognizer to view
-        self.view.addGestureRecognizer(tapRecognizer!)
+        view.addGestureRecognizer(tapRecognizer!)
     }
     
     func removeKeyboardDismissRecognizer() {
         //Remove tap gesture recognizer from view
-        self.view.removeGestureRecognizer(tapRecognizer!)
+        view.removeGestureRecognizer(tapRecognizer!)
     }
     
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         //Resign first responder on tap
-        self.view.endEditing(true)
+        view.endEditing(true)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -95,15 +96,19 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     @IBAction func loginButtonTouch(sender: UIButton) {
+        debugTextLabel.text = ""
+        loginActivityIndicator.startAnimating()
+       
         //Check if email/password field is empty
         if emailTextField.text.isEmpty || passwordTextField.text.isEmpty {
-            self.debugTextLabel.text = "Email/Password Empty."
+            debugTextLabel.text = "Email/Password Empty."
+            loginActivityIndicator.stopAnimating()
         } else {
             //If not, proceed to get the session ID
             let jsonBody : [String : AnyObject] = [
                 UdacityClient.JSONBodyKeys.Udacity : [
-                    UdacityClient.JSONBodyKeys.Username : "\(self.emailTextField.text)",
-                    UdacityClient.JSONBodyKeys.Password : "\(self.passwordTextField.text)"
+                    UdacityClient.JSONBodyKeys.Username : "\(emailTextField.text)",
+                    UdacityClient.JSONBodyKeys.Password : "\(passwordTextField.text)"
                 ]
             ]
             
@@ -112,6 +117,9 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
                     self.completeLogin()
                 } else {
                     self.displayError(errorString)
+                }
+                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                    self.loginActivityIndicator.stopAnimating()
                 }
             }
         }
@@ -138,9 +146,9 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     @IBAction func signUpButtonTouch(sender: UIButton) {
         //If sign up button is touched, present the udacity sign up page using a web view
         
-        let signUpViewController = self.storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
+        let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
         
-            self.presentViewController(signUpViewController, animated: true, completion: nil)
+            presentViewController(signUpViewController, animated: true, completion: nil)
     }
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {

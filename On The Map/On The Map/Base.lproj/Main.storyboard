@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E26a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E36b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -109,6 +109,9 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="UWw-GT-dSA">
+                                <rect key="frame" x="290" y="480" width="20" height="20"/>
+                            </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0YH-nx-Pj1" customClass="FBSDKLoginButton">
                                 <rect key="frame" x="16" y="536" width="568" height="44"/>
                                 <color key="backgroundColor" red="0.22352941176470589" green="0.32941176470588235" blue="0.65098039215686276" alpha="1" colorSpace="calibratedRGB"/>
@@ -124,6 +127,7 @@
                         <color key="backgroundColor" red="0.97254901960784312" green="0.51764705882352946" blue="0.054901960784313725" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="kbA-Cr-I7N" firstAttribute="centerX" secondItem="KvB-cE-juO" secondAttribute="centerX" id="5Pv-DR-ccs"/>
+                            <constraint firstItem="gkC-k6-dLu" firstAttribute="centerY" secondItem="UWw-GT-dSA" secondAttribute="centerY" id="BeP-VO-hNy"/>
                             <constraint firstItem="gkC-k6-dLu" firstAttribute="trailing" secondItem="0YH-nx-Pj1" secondAttribute="trailing" id="JXA-K4-hCs"/>
                             <constraint firstItem="swh-oS-FUf" firstAttribute="leading" secondItem="4PV-4t-Dzj" secondAttribute="leading" id="KDB-yw-oqW"/>
                             <constraint firstItem="dvc-xm-3F2" firstAttribute="leading" secondItem="4PV-4t-Dzj" secondAttribute="leading" id="KcD-gK-oU8"/>
@@ -143,6 +147,7 @@
                             <constraint firstItem="gkC-k6-dLu" firstAttribute="top" secondItem="dvc-xm-3F2" secondAttribute="bottom" constant="8" symbolic="YES" id="ojY-Wf-ZxK"/>
                             <constraint firstItem="dvc-xm-3F2" firstAttribute="leading" secondItem="gkC-k6-dLu" secondAttribute="leading" id="ri7-rb-To8"/>
                             <constraint firstItem="0YH-nx-Pj1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="tcH-JC-4aw"/>
+                            <constraint firstItem="gkC-k6-dLu" firstAttribute="centerX" secondItem="UWw-GT-dSA" secondAttribute="centerX" id="u4D-K4-pKW"/>
                             <constraint firstItem="kbA-Cr-I7N" firstAttribute="top" secondItem="KvB-cE-juO" secondAttribute="bottom" constant="30" id="vTb-K0-nSk"/>
                             <constraint firstItem="dvc-xm-3F2" firstAttribute="top" secondItem="4PV-4t-Dzj" secondAttribute="bottom" constant="8" symbolic="YES" id="xt9-3e-LTH"/>
                             <constraint firstItem="swh-oS-FUf" firstAttribute="top" secondItem="kbA-Cr-I7N" secondAttribute="bottom" constant="8" symbolic="YES" id="yMH-1h-klx"/>
@@ -152,6 +157,7 @@
                         <outlet property="debugTextLabel" destination="gkC-k6-dLu" id="Ogg-n3-lnX"/>
                         <outlet property="emailTextField" destination="kbA-Cr-I7N" id="QHW-h7-8r7"/>
                         <outlet property="facebookLoginButton" destination="0YH-nx-Pj1" id="vnU-dc-O1g"/>
+                        <outlet property="loginActivityIndicator" destination="UWw-GT-dSA" id="o46-m3-lly"/>
                         <outlet property="loginButton" destination="4PV-4t-Dzj" id="yUW-bo-cDJ"/>
                         <outlet property="passwordTextField" destination="swh-oS-FUf" id="EIt-eT-POg"/>
                         <outlet property="signUpButton" destination="dvc-xm-3F2" id="CWw-b4-iCD"/>
@@ -361,7 +367,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8oL-8j-qm3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3506" y="488"/>
+            <point key="canvasLocation" x="2694" y="516"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="Bqu-k6-evP">
@@ -417,7 +423,9 @@
         <scene sceneID="heg-9s-rQT">
             <objects>
                 <tabBarController id="eI4-kc-3VF" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="wAP-UB-kOn"/>
+                    <navigationItem key="navigationItem" id="wAP-UB-kOn">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="tDq-Ys-wyU"/>
+                    </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="915-GL-vaz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
