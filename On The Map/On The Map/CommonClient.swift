@@ -10,7 +10,7 @@ import Foundation
 
 class CommonClient {
     
-    //Helper function for parsing error data
+    /// Parses error data
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError {
         
         if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject] {
@@ -25,7 +25,7 @@ class CommonClient {
         return error
     }
     
-    //Helper function for parsing JSON data
+    /// Parses JSON data
     class func parseJSONWithCompletionHandler(data: NSData, completionHandler: (result: AnyObject!, error: NSError?) -> Void) {
         
         var parsingError: NSError? = nil
@@ -36,7 +36,6 @@ class CommonClient {
         } else {
             completionHandler(result: parsedResult, error: nil)
         }
-        
     }
     
 }

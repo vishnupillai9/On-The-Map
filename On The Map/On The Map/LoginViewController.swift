@@ -9,6 +9,8 @@
 import UIKit
 
 class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
+    
+    // MARK: - Properties
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -19,6 +21,8 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     @IBOutlet weak var loginActivityIndicator: UIActivityIndicatorView!
     
     var tapRecognizer: UITapGestureRecognizer?
+    
+    //MARK: - Life Cycles
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,10 +33,22 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         
         FBSDKLoginManager().logOut()
     }
-
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        addKeyboardDismissRecognizer()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(true)
+        removeKeyboardDismissRecognizer()
+    }
+    
+    // MARK: - User Interface
+    
+    /// Configures the User Interface
     func configureUI() {
-        
-        //Set background to orange gradient
+        // Set background to orange gradient
         view.backgroundColor = UIColor.clearColor()
         
         let colorTop = UIColor(red: 0.973, green: 0.518, blue: 0.055, alpha: 1.0).CGColor
@@ -45,114 +61,32 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         
         view.layer.insertSublayer(backgroundGradient, atIndex: 0)
         
-        //Left padding the email text field
+        // Left padding the email text field
         let emailTextFieldPaddingViewFrame = CGRectMake(0.0, 0.0, 13.0, 0.0)
         let emailTextFieldPaddingView = UIView(frame: emailTextFieldPaddingViewFrame)
         emailTextField.leftView = emailTextFieldPaddingView
         emailTextField.leftViewMode = .Always
         
-        //Setting email placeholder text to white color
+        // Setting email placeholder text to white color
         emailTextField.attributedPlaceholder = NSAttributedString(string: emailTextField.placeholder!, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
         
-        //Left padding the password text field
+        // Left padding the password text field
         let passwordTextFieldPaddingViewFrame = CGRectMake(0.0, 0.0, 13.0, 0.0)
         let passwordTextFieldPaddingView = UIView(frame: passwordTextFieldPaddingViewFrame)
         passwordTextField.leftView = passwordTextFieldPaddingView
         passwordTextField.leftViewMode = .Always
 
-        //Setting password placeholder text to white color
+        // Setting password placeholder text to white color
         passwordTextField.attributedPlaceholder = NSAttributedString(string: passwordTextField.placeholder!, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
         
-        //Tap recognizer
+        // Tap recognizer
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
         tapRecognizer?.numberOfTapsRequired = 1
     }
     
-    func addKeyboardDismissRecognizer() {
-        //Add tap gesture recognizer to view
-        view.addGestureRecognizer(tapRecognizer!)
-    }
-    
-    func removeKeyboardDismissRecognizer() {
-        //Remove tap gesture recognizer from view
-        view.removeGestureRecognizer(tapRecognizer!)
-    }
-    
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {
-        //Resign first responder on tap
-        view.endEditing(true)
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        //Add tap recognizer when view appears
-        addKeyboardDismissRecognizer()
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(true)
-        //Remove tap recognizer when view disappears
-        removeKeyboardDismissRecognizer()
-    }
-    
-    @IBAction func loginButtonTouch(sender: UIButton) {
-        debugTextLabel.text = ""
-        loginActivityIndicator.startAnimating()
-       
-        //Check if email/password field is empty
-        if emailTextField.text.isEmpty || passwordTextField.text.isEmpty {
-            debugTextLabel.text = "Email/Password Empty."
-            loginActivityIndicator.stopAnimating()
-        } else {
-            //If not, proceed to get the session ID
-            let jsonBody : [String : AnyObject] = [
-                UdacityClient.JSONBodyKeys.Udacity : [
-                    UdacityClient.JSONBodyKeys.Username : "\(emailTextField.text)",
-                    UdacityClient.JSONBodyKeys.Password : "\(passwordTextField.text)"
-                ]
-            ]
-            
-            UdacityClient.sharedInstance().getSessionID(jsonBody) { (success, sessionID, errorString) -> Void in
-                if success {
-                    self.completeLogin()
-                } else {
-                    self.displayError(errorString)
-                }
-                dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                    self.loginActivityIndicator.stopAnimating()
-                }
-            }
-        }
-    }
-    
-    func displayError(errorString: String?) {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            if let errorString = errorString {
-                self.debugTextLabel.text = errorString
-            }
-        })
-    }
-    
-    func completeLogin() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            //Upon successful login, clear the debug label
-            self.debugTextLabel.text = ""
-            //Segue to MapTableVC
-            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
-            self.presentViewController(controller, animated: true, completion: nil)
-        })
-    }
-    
-    @IBAction func signUpButtonTouch(sender: UIButton) {
-        //If sign up button is touched, present the udacity sign up page using a web view
-        
-        let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
-        
-            presentViewController(signUpViewController, animated: true, completion: nil)
-    }
+    // MARK: - Facebook Login
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
-        
         if error != nil {
             println("Facebook login error")
         } else if result.isCancelled {
@@ -170,8 +104,83 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         
     }
     
-    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-        println("User logged out")
+    /// Called when user logs out of Facebook
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) { }
+    
+    // MARK: - Actions
+    
+    @IBAction func loginButtonTouch(sender: UIButton) {
+        debugTextLabel.text = ""
+        loginActivityIndicator.startAnimating()
+       
+        // Check if email/password field is empty
+        if emailTextField.text.isEmpty || passwordTextField.text.isEmpty {
+            debugTextLabel.text = "Email/Password Empty."
+            loginActivityIndicator.stopAnimating()
+        } else {
+            // If not, proceed to get the session ID
+            let jsonBody : [String : AnyObject] = [
+                UdacityClient.JSONBodyKeys.Udacity : [
+                    UdacityClient.JSONBodyKeys.Username : emailTextField.text,
+                    UdacityClient.JSONBodyKeys.Password : passwordTextField.text
+                ]
+            ]
+            
+            UdacityClient.sharedInstance().getSessionID(jsonBody) { (success, sessionID, errorString) -> Void in
+                if success {
+                    self.completeLogin()
+                } else {
+                    self.displayError(errorString)
+                }
+                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                    self.loginActivityIndicator.stopAnimating()
+                }
+            }
+        }
+    }
+    
+    /// Presents the Udacity sign up page using a web view
+    @IBAction func signUpButtonTouch(sender: UIButton) {
+        let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
+        
+        presentViewController(signUpViewController, animated: true, completion: nil)
+    }
+    
+    // MARK: - Helpers
+    
+    /// Completes the login
+    func completeLogin() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            // Upon successful login, clear the debug label
+            self.debugTextLabel.text = ""
+            // Segue to MapTableVC
+            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
+            self.presentViewController(controller, animated: true, completion: nil)
+        })
+    }
+    
+    /// Displays error message
+    func displayError(errorString: String?) {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            if let errorString = errorString {
+                self.debugTextLabel.text = errorString
+            }
+        })
+    }
+    
+    /// Adds tap gesture recognizer to view
+    func addKeyboardDismissRecognizer() {
+        view.addGestureRecognizer(tapRecognizer!)
+    }
+    
+    /// Removes tap gesture recognizer from view
+    func removeKeyboardDismissRecognizer() {
+        view.removeGestureRecognizer(tapRecognizer!)
+    }
+    
+    /// Resigns first responder on tap
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
     
 }

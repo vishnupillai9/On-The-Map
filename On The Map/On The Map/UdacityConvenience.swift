@@ -10,6 +10,7 @@ import Foundation
 
 extension UdacityClient {
     
+    /// Gets session ID
     func getSessionID(jsonBody: [String: AnyObject], completionHandler: (success: Bool, sessionID: String?, errorString: String?) -> Void) {
         
         let task = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in            
@@ -42,6 +43,7 @@ extension UdacityClient {
         }
     }
     
+    /// Gets public user data of the student 
     func getPublicUserData(completionHandler: (success: Bool, firstName: String?, lastName: String?, errorString: String?) -> Void) {
         let task = taskForGETMethod { (JSONResult, error) -> Void in
             if let error = error {

@@ -30,4 +30,5 @@ extension ParseClient {
         static let Latitude = "latitude"
         static let Longitude = "longitude"
     }
+    
 }

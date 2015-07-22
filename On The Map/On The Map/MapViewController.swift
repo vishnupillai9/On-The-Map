@@ -11,6 +11,8 @@ import MapKit
 
 class MapViewController: UIViewController, MKMapViewDelegate {
     
+    // MARK: - Properties
+    
     @IBOutlet weak var mapView: MKMapView!
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -21,7 +23,59 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         getData()
     }
     
-    //Function to get student locations
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
+        
+        // Set the navigation bar title
+        self.parentViewController!.navigationItem.title = "On The Map"
+        
+        // Create and set left bar button item
+        self.parentViewController!.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "pinButtonTouch")
+        
+        // Create and set right bar button item
+        self.parentViewController!.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshData")
+    }
+    
+    // MARK: - Map View Delegate
+    
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        let reuseIdentifier = "pin"
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseIdentifier) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
+            pinView!.canShowCallout = true
+            pinView!.animatesDrop = true
+        }
+        
+        // Adding detail button
+        var button = UIButton.buttonWithType(UIButtonType.DetailDisclosure) as! UIButton
+        pinView?.rightCalloutAccessoryView = button
+        
+        return pinView
+    }
+    
+    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+        
+        if control == view.rightCalloutAccessoryView {
+            // When user taps on detail button, open URL in Safari
+            UIApplication.sharedApplication().openURL(NSURL(string: view.annotation.subtitle!)!)
+        }
+    }
+    
+    // MARK: - Helpers
+    
+    /// Presents information posting view when pin button is touched
+    func pinButtonTouch() {
+        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController") as! InformationPostingViewController
+        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    
+    /// Gets student locations
     func getData() {
         ParseClient.sharedInstance().getStudentLocations { (success, studentData, errorString) -> Void in
             if success {
@@ -44,7 +98,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     }
                 }
             } else {
-                //Alert view to inform the user getting student locations failed
+                // Alert view to inform the user getting student locations failed
                 var alert = UIAlertController(title: "Failed to get student locations", message: "Fetching student locations from server failed", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
@@ -52,56 +106,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        
-        //Set the navigation bar title
-        self.parentViewController!.navigationItem.title = "On The Map"
-        
-        //Create and set left bar button item
-        self.parentViewController!.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "pinButtonTouch")
-        
-        //Create and set right bar button item
-        self.parentViewController!.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "refreshData")
-    }
-    
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-        if annotation is MKUserLocation {
-            return nil
-        }
-        
-        let reuseIdentifier = "pin"
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseIdentifier) as? MKPinAnnotationView
-        
-        if pinView == nil {
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-            pinView!.canShowCallout = true
-            pinView!.animatesDrop = true
-        }
-        
-        //Adding detail button
-        var button = UIButton.buttonWithType(UIButtonType.DetailDisclosure) as! UIButton
-        pinView?.rightCalloutAccessoryView = button
-        
-        return pinView
-    }
-    
-    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
-        
-        if control == view.rightCalloutAccessoryView {
-            //When user taps on detail button, open URL in Safari
-            UIApplication.sharedApplication().openURL(NSURL(string: view.annotation.subtitle!)!)
-        }
-    }
-    
-    func pinButtonTouch() {
-        //Present information posting view when pin button is touched
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController") as! InformationPostingViewController
-        self.presentViewController(controller, animated: true, completion: nil)
-    }
-    
+    /// Remove all pins from map before refreshing data
     func refreshData() {
-        //Remove all pins from map before refreshing data
         let annotationsToRemove = mapView.annotations.filter { $0 !== self.mapView.userLocation }
         mapView.removeAnnotations(annotationsToRemove)
         getData()

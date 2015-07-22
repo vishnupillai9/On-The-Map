@@ -103,6 +103,57 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		27EC783E1B563B9D0047D48F /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				27FD63351ABEA67800A7CB72 /* LoginViewController.swift */,
+				2736B45B1ABEFA8C003E6E79 /* SignUpViewController.swift */,
+				2705FC9C1AC0470000860105 /* MapViewController.swift */,
+				2705FC9E1AC0479200860105 /* TableViewController.swift */,
+				270A12911AC19F58003E81BF /* InformationPostingViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		27EC783F1B563BB60047D48F /* Udacity */ = {
+			isa = PBXGroup;
+			children = (
+				27213C761ACC533F004C60E9 /* UdacityConstants.swift */,
+				27213C741ACC512E004C60E9 /* UdacityClient.swift */,
+				27213C781ACC5BBD004C60E9 /* UdacityConvenience.swift */,
+			);
+			name = Udacity;
+			sourceTree = "<group>";
+		};
+		27EC78401B563BEB0047D48F /* Parse */ = {
+			isa = PBXGroup;
+			children = (
+				27EB8F7B1ACC702100E92FC3 /* ParseConstants.swift */,
+				27EB8F791ACC6F5A00E92FC3 /* ParseClient.swift */,
+				2729B39A1ACC76AC0021A69F /* ParseConvenience.swift */,
+			);
+			name = Parse;
+			sourceTree = "<group>";
+		};
+		27EC78411B563C060047D48F /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				27EC783F1B563BB60047D48F /* Udacity */,
+				27EC78401B563BEB0047D48F /* Parse */,
+				27213C7A1ACC61FC004C60E9 /* CommonClient.swift */,
+			);
+			name = Clients;
+			sourceTree = "<group>";
+		};
+		27EC78421B563C1E0047D48F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				270A128F1AC1826C003E81BF /* UdacityStudent.swift */,
+				27EC78411B563C060047D48F /* Clients */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		27FD63251ABEA67800A7CB72 = {
 			isa = PBXGroup;
 			children = (
@@ -125,24 +176,12 @@
 		27FD63301ABEA67800A7CB72 /* On The Map */ = {
 			isa = PBXGroup;
 			children = (
+				27EC78421B563C1E0047D48F /* Model */,
+				27EC783E1B563B9D0047D48F /* Controller */,
 				27FD63331ABEA67800A7CB72 /* AppDelegate.swift */,
-				27213C761ACC533F004C60E9 /* UdacityConstants.swift */,
-				27213C741ACC512E004C60E9 /* UdacityClient.swift */,
-				27213C781ACC5BBD004C60E9 /* UdacityConvenience.swift */,
-				27EB8F7B1ACC702100E92FC3 /* ParseConstants.swift */,
-				27EB8F791ACC6F5A00E92FC3 /* ParseClient.swift */,
-				2729B39A1ACC76AC0021A69F /* ParseConvenience.swift */,
-				27213C7A1ACC61FC004C60E9 /* CommonClient.swift */,
-				270A128F1AC1826C003E81BF /* UdacityStudent.swift */,
 				27FD63371ABEA67800A7CB72 /* Main.storyboard */,
-				27FD63351ABEA67800A7CB72 /* LoginViewController.swift */,
-				2736B45B1ABEFA8C003E6E79 /* SignUpViewController.swift */,
-				2705FC9C1AC0470000860105 /* MapViewController.swift */,
-				2705FC9E1AC0479200860105 /* TableViewController.swift */,
-				270A12911AC19F58003E81BF /* InformationPostingViewController.swift */,
-				279DE1F51B1708B300AF3D29 /* Facebook-Login-Bridging-Header.h */,
-				27FD633A1ABEA67800A7CB72 /* Images.xcassets */,
 				27FD633C1ABEA67800A7CB72 /* LaunchScreen.xib */,
+				27FD633A1ABEA67800A7CB72 /* Images.xcassets */,
 				27FD63311ABEA67800A7CB72 /* Supporting Files */,
 			);
 			path = "On The Map";
@@ -151,6 +190,7 @@
 		27FD63311ABEA67800A7CB72 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				279DE1F51B1708B300AF3D29 /* Facebook-Login-Bridging-Header.h */,
 				279316551ABEAE7E00A5E815 /* Roboto-Medium.ttf */,
 				279316561ABEAE7E00A5E815 /* Roboto-Regular.ttf */,
 				279316571ABEAE7E00A5E815 /* Roboto-Thin.ttf */,
@@ -220,6 +260,7 @@
 		27FD63261ABEA67800A7CB72 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = "Vishnu Pillai";
 				TargetAttributes = {

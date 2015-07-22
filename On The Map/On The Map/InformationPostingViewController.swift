@@ -11,6 +11,8 @@ import CoreLocation
 import MapKit
 
 class InformationPostingViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UITextViewDelegate {
+    
+    // MARK: - Properties
 
     @IBOutlet weak var findOnTheMapButton: UIButton!
     @IBOutlet weak var textView: UITextView!
@@ -29,10 +31,12 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
     var defaultMediaText = "Enter a Link To Share Here"
     var defaultLocationText = "Enter Your Location Here"
     
+    // MARK: - Life cycles
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Get public user data of the student, set first name and last name
+        // Set first name and last name
         UdacityClient.sharedInstance().getPublicUserData { (success, firstName, lastName, errorString) -> Void in
             self.firstName = firstName!
             self.lastName = lastName!
@@ -51,7 +55,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
         mediaTextView.textContainerInset = UIEdgeInsetsMake(80, 20, 40, 20)
         mediaTextView.text = defaultMediaText
         
-        //Tap Recognizer
+        // Tap Recognizer
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
         tapRecognizer?.numberOfTapsRequired = 1
         
@@ -61,35 +65,19 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
         
     }
     
-    func addKeyboardDismissRecognizer() {
-        //Add tap gesture recognizer to view
-        self.view.addGestureRecognizer(tapRecognizer!)
-    }
-    
-    func removeKeyboardDismissRecognizer() {
-        //Remove tap gesture recognizer from view
-        self.view.removeGestureRecognizer(tapRecognizer!)
-    }
-    
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {
-        //Resign first responder on tap
-        self.view.endEditing(true)
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-        //Add tap recognizer when view appears
         addKeyboardDismissRecognizer()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(true)
-        //Remove tap recognizer when view disappears
         removeKeyboardDismissRecognizer()
     }
     
+    // MARK: - Location
+    
     func getCoordinatesFromAddressString(completion: (latitude: Double, longitude: Double) -> Void) {
-        
         var lat: CLLocationDegrees = 0.0
         var long: CLLocationDegrees = 0.0
         
@@ -103,7 +91,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
             if error != nil {
                 println("Geocode failed with error.")
                 
-                //Alert View for letting the user know geocoding failed
+                // Alert View for letting the user know geocoding failed
                 var alert = UIAlertController(title: "Geocoding failed", message: "Geocoding address has failed.", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
@@ -113,7 +101,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
                 self.findOnTheMapButton.hidden = false
                 
             } else if placemarks.count > 0 {
-                //Get latitude and longitude from address string
+                // Get latitude and longitude from address string
                 let placemark = placemarks[0] as! CLPlacemark
                 let coordinates = placemark.location.coordinate
                 
@@ -135,21 +123,27 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
                 })
             }
         })
-        
     }
+    
+    /// Adds pin and zooms into location
+    func zoomInToLocation(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
+        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        let newAnnotation = MKPointAnnotation()
+        newAnnotation.coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+        mapView.addAnnotation(newAnnotation)
+        mapView.setRegion(region, animated: true)
+        mapView.regionThatFits(region)
+    }
+    
+    // MARK: - Actions
     
     @IBAction func findOnTheMapButtonTouch(sender: UIButton) {
         getCoordinatesFromAddressString { (latitude, longitude) -> Void in
-            //When find on the map button is touched, zoom into the location the user entered
+            // When find on the map button is touched, zoom into the location the user entered
             self.zoomInToLocation(latitude, longitude: longitude)
             self.lat = latitude
             self.long = longitude
         }
-    }
-    
-    func isValidURL(url: NSURL) -> Bool {
-        let request = NSURLRequest(URL: url)
-        return NSURLConnection.canHandleRequest(request)
     }
     
     @IBAction func submitButtonTouch(sender: UIButton) {
@@ -162,7 +156,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
                             self.dismissViewControllerAnimated(true, completion: nil)
                         }
                     } else {
-                        //Alert view to let the user know post failed
+                        // Alert view to let the user know post failed
                         var alert = UIAlertController(title: "Post Failed", message: "Failed to post your request to the server", preferredStyle: UIAlertControllerStyle.Alert)
                         alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                         self.presentViewController(alert, animated: true, completion: nil)
@@ -176,22 +170,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
         }
     }
     
-    func invalidURLAlert() {
-        //Display alert view if URL provided is invalid
-        var alert = UIAlertController(title: "Invalid URL", message: "Please enter a valid URL to continue.", preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    //Add pin and zoom into location
-    func zoomInToLocation(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
-        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        let newAnnotation = MKPointAnnotation()
-        newAnnotation.coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-        mapView.addAnnotation(newAnnotation)
-        mapView.setRegion(region, animated: true)
-        mapView.regionThatFits(region)
-    }
+    // MARK: - Text View Delegate
     
     func textViewDidBeginEditing(textView: UITextView) {
         if textView.text == defaultLocationText {
@@ -201,4 +180,35 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
             textView.text = ""
         }
     }
+    
+    // MARK: - Helpers
+    
+    /// Displays alert view if URL provided is invalid
+    func invalidURLAlert() {
+        var alert = UIAlertController(title: "Invalid URL", message: "Please enter a valid URL to continue.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    /// Validates URL
+    func isValidURL(url: NSURL) -> Bool {
+        let request = NSURLRequest(URL: url)
+        return NSURLConnection.canHandleRequest(request)
+    }
+    
+    /// Adds tap gesture recognizer to view
+    func addKeyboardDismissRecognizer() {
+        self.view.addGestureRecognizer(tapRecognizer!)
+    }
+    
+    /// Removes tap gesture recognizer from view
+    func removeKeyboardDismissRecognizer() {
+        self.view.removeGestureRecognizer(tapRecognizer!)
+    }
+    
+    /// Resigns first responder on tap
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
 }
