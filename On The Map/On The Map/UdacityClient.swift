@@ -32,16 +32,16 @@ class UdacityClient : NSObject {
         request.HTTPMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: nil)
+        request.HTTPBody = try? NSJSONSerialization.dataWithJSONObject(jsonBody, options: [])
         
         // 4. Make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
             // 5/6. Parse and use the data
             if let error = downloadError {
-                let newError = CommonClient.errorForData(data, response: response, error: error)
+                _ = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
                 CommonClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
         }
@@ -65,11 +65,11 @@ class UdacityClient : NSObject {
         // 4. Make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
             if let error = downloadError {
-                let newError = CommonClient.errorForData(data, response: response, error: error)
+                _ = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {
                 // 5/6. Parse and use the data
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
                 CommonClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
         }

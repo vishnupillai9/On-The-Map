@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
@@ -54,7 +55,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         let colorTop = UIColor(red: 0.973, green: 0.518, blue: 0.055, alpha: 1.0).CGColor
         let colorBottom = UIColor(red: 0.957, green: 0.353, blue: 0.039, alpha: 1.0).CGColor
         
-        var backgroundGradient = CAGradientLayer()
+        let backgroundGradient = CAGradientLayer()
         backgroundGradient.colors = [colorTop, colorBottom]
         backgroundGradient.locations = [0.0, 1.0]
         backgroundGradient.frame = view.frame
@@ -88,9 +89,9 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
         if error != nil {
-            println("Facebook login error")
+            print("Facebook login error")
         } else if result.isCancelled {
-            println("Facebook login error (Cancelled)")
+            print("Facebook login error (Cancelled)")
         } else {
             let jsonBody = ["facebook_mobile": ["access_token": "\(FBSDKAccessToken.currentAccessToken().tokenString)"]]
             UdacityClient.sharedInstance().getSessionID(jsonBody, completionHandler: { (success, sessionID, errorString) -> Void in
@@ -114,15 +115,15 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         loginActivityIndicator.startAnimating()
        
         // Check if email/password field is empty
-        if emailTextField.text.isEmpty || passwordTextField.text.isEmpty {
+        if emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty {
             debugTextLabel.text = "Email/Password Empty."
             loginActivityIndicator.stopAnimating()
         } else {
             // If not, proceed to get the session ID
-            let jsonBody : [String : AnyObject] = [
+            let jsonBody : [String : [String : String]] = [
                 UdacityClient.JSONBodyKeys.Udacity : [
-                    UdacityClient.JSONBodyKeys.Username : emailTextField.text,
-                    UdacityClient.JSONBodyKeys.Password : passwordTextField.text
+                    UdacityClient.JSONBodyKeys.Username : emailTextField.text!,
+                    UdacityClient.JSONBodyKeys.Password : passwordTextField.text!
                 ]
             ]
             
@@ -141,9 +142,14 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     /// Presents the Udacity sign up page using a web view
     @IBAction func signUpButtonTouch(sender: UIButton) {
-        let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
-        
-        presentViewController(signUpViewController, animated: true, completion: nil)
+        if #available(iOS 9.0, *) {
+            presentSafariViewController()
+        } else {
+            let signUpViewController = storyboard!.instantiateViewControllerWithIdentifier("SignUpNavigationController") as! UINavigationController
+            
+            presentViewController(signUpViewController, animated: true, completion: nil)
+
+        }
     }
     
     // MARK: - Helpers
@@ -181,6 +187,12 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     /// Resigns first responder on tap
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         view.endEditing(true)
+    }
+    
+    @available(iOS 9.0, *)
+    func presentSafariViewController() {
+        let svc = SFSafariViewController(URL: NSURL(string: UdacityClient.Constants.UdacitySignUpURL)!)
+        presentViewController(svc, animated: true, completion: nil)
     }
     
 }

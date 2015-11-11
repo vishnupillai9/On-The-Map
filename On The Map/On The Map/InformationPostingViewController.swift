@@ -81,7 +81,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
         var lat: CLLocationDegrees = 0.0
         var long: CLLocationDegrees = 0.0
         
-        var geoCoder = CLGeocoder()
+        let geoCoder = CLGeocoder()
         
         findOnTheMapButton.hidden = true
         activityIndicator.hidden = false
@@ -89,10 +89,10 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
         
         geoCoder.geocodeAddressString(self.textView.text, completionHandler: { (placemarks, error) -> Void in
             if error != nil {
-                println("Geocode failed with error.")
+                print("Geocode failed with error.")
                 
                 // Alert View for letting the user know geocoding failed
-                var alert = UIAlertController(title: "Geocoding failed", message: "Geocoding address has failed.", preferredStyle: UIAlertControllerStyle.Alert)
+                let alert = UIAlertController(title: "Geocoding failed", message: "Geocoding address has failed.", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
                 
@@ -100,15 +100,15 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
                 self.activityIndicator.hidden = true
                 self.findOnTheMapButton.hidden = false
                 
-            } else if placemarks.count > 0 {
+            } else if placemarks!.count > 0 {
                 // Get latitude and longitude from address string
-                let placemark = placemarks[0] as! CLPlacemark
-                let coordinates = placemark.location.coordinate
+                let placemark = placemarks![0]
+                let coordinates = placemark.location!.coordinate
                 
                 lat = coordinates.latitude
                 long = coordinates.longitude
-                println(self.textView.text)
-                println("lat: \(lat), long: \(long)")
+                print(self.textView.text)
+                print("lat: \(lat), long: \(long)")
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.textView.hidden = true
                     self.activityIndicator.stopAnimating()
@@ -151,13 +151,13 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
             if isValidURL(media) {
                 ParseClient.sharedInstance().postStudentLocations(firstName!, lastName: lastName!, mapString: textView.text, mediaURL: mediaTextView.text, latitude: lat!, longitude: long!) { (success, responseMessage) -> Void in
                     if success {
-                        println(responseMessage!)
+                        print(responseMessage!)
                         dispatch_async(dispatch_get_main_queue()) { () -> Void in
                             self.dismissViewControllerAnimated(true, completion: nil)
                         }
                     } else {
                         // Alert view to let the user know post failed
-                        var alert = UIAlertController(title: "Post Failed", message: "Failed to post your request to the server", preferredStyle: UIAlertControllerStyle.Alert)
+                        let alert = UIAlertController(title: "Post Failed", message: "Failed to post your request to the server", preferredStyle: UIAlertControllerStyle.Alert)
                         alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                         self.presentViewController(alert, animated: true, completion: nil)
                     }
@@ -185,7 +185,7 @@ class InformationPostingViewController: UIViewController, CLLocationManagerDeleg
     
     /// Displays alert view if URL provided is invalid
     func invalidURLAlert() {
-        var alert = UIAlertController(title: "Invalid URL", message: "Please enter a valid URL to continue.", preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: "Invalid URL", message: "Please enter a valid URL to continue.", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }

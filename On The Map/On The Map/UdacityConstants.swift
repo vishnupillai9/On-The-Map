@@ -12,6 +12,7 @@ extension UdacityClient {
     
     struct Constants {
         static let UdacityBaseURL: String = "https://www.udacity.com/api/"
+        static let UdacitySignUpURL: String = "https://www.udacity.com/account/auth#!/signin"
     }
     
     struct Methods {

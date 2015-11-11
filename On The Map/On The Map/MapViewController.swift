@@ -38,7 +38,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Map View Delegate
     
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
             return nil
         }
@@ -53,17 +53,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
         
         // Adding detail button
-        var button = UIButton.buttonWithType(UIButtonType.DetailDisclosure) as! UIButton
+        let button = UIButton(type: UIButtonType.DetailDisclosure)
         pinView?.rightCalloutAccessoryView = button
         
         return pinView
     }
     
-    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
         if control == view.rightCalloutAccessoryView {
             // When user taps on detail button, open URL in Safari
-            UIApplication.sharedApplication().openURL(NSURL(string: view.annotation.subtitle!)!)
+            UIApplication.sharedApplication().openURL(NSURL(string: view.annotation!.subtitle!!)!)
         }
     }
     
@@ -83,8 +83,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 dispatch_async(dispatch_get_main_queue()) { () -> Void in
                     for student in self.appDelegate.students {
                         //Add pin to the map for every student
-                        var location = CLLocationCoordinate2DMake(student.latitude!, student.longitude!)
-                        var pin = MKPointAnnotation()
+                        let location = CLLocationCoordinate2DMake(student.latitude!, student.longitude!)
+                        let pin = MKPointAnnotation()
                         pin.coordinate = location
                         if let firstName = student.firstName {
                             if let lastName = student.lastName {
@@ -99,7 +99,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 }
             } else {
                 // Alert view to inform the user getting student locations failed
-                var alert = UIAlertController(title: "Failed to get student locations", message: "Fetching student locations from server failed", preferredStyle: UIAlertControllerStyle.Alert)
+                let alert = UIAlertController(title: "Failed to get student locations", message: "Fetching student locations from server failed", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
             }

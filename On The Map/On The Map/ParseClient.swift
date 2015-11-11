@@ -19,7 +19,7 @@ class ParseClient: NSObject {
     
     func taskForGETMethod(completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
         // 1. Set parameters
-        let limit = 100
+        _ = 100
         
         // 2. Build URL
         let urlString = Constants.ParseBaseURL
@@ -33,11 +33,11 @@ class ParseClient: NSObject {
         // 4. Make request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
             if let error = downloadError {
-                let newError = CommonClient.errorForData(data, response: response, error: error)
+                _ = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {
                 // 5/6. Parse & use the data
-                CommonClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                CommonClient.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
         }
         
@@ -60,16 +60,16 @@ class ParseClient: NSObject {
         request.addValue(Constants.ParseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(Constants.RESTApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: nil)
+        request.HTTPBody = try? NSJSONSerialization.dataWithJSONObject(jsonBody, options: [])
         
         // 4. Make request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
             if let error = downloadError {
-                let newError = CommonClient.errorForData(data, response: response, error: error)
+                _ = CommonClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: downloadError)
             } else {
                 // 5/6. Parse and use the data
-                CommonClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                CommonClient.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
             
         }

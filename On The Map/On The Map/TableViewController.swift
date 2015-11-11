@@ -48,7 +48,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let reuseIdentifier = "StudentTableViewCell"
         let student = appDelegate.students[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)!
         
         // Display name of the student in cell
         if let firstName = student.firstName {
@@ -89,7 +89,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 }
             } else {
                 // Alert view to inform the user getting student list failed
-                var alert = UIAlertController(title: "Failed to get student list", message: "Fetching student list from server failed", preferredStyle: UIAlertControllerStyle.Alert)
+                let alert = UIAlertController(title: "Failed to get student list", message: "Fetching student list from server failed", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
             }

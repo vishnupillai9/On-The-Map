@@ -13,7 +13,7 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var webView: UIWebView!
     
     //Set the signup url
-    let signUpURL = NSURL(string: "https://www.udacity.com/account/auth#!/signin")!
+    let signUpURL = NSURL(string: UdacityClient.Constants.UdacitySignUpURL)!
     
     override func viewDidLoad() {
         refresh()

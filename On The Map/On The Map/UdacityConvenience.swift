@@ -13,8 +13,8 @@ extension UdacityClient {
     /// Gets session ID
     func getSessionID(jsonBody: [String: AnyObject], completionHandler: (success: Bool, sessionID: String?, errorString: String?) -> Void) {
         
-        let task = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in            
-            if let error = error {
+        _ = taskForPOSTMethod(jsonBody) { (JSONResult, error) -> Void in            
+            if let _ = error {
                 //Pass error message using completion handler. Ask user to check connection
                 completionHandler(success: false, sessionID: nil, errorString: "Connection Error. Please check your connection and try again.")
             } else {
@@ -45,13 +45,13 @@ extension UdacityClient {
     
     /// Gets public user data of the student 
     func getPublicUserData(completionHandler: (success: Bool, firstName: String?, lastName: String?, errorString: String?) -> Void) {
-        let task = taskForGETMethod { (JSONResult, error) -> Void in
-            if let error = error {
+        _ = taskForGETMethod { (JSONResult, error) -> Void in
+            if let _ = error {
                 //Pass error message using completion handler
                 completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Could not get user data")
             } else {
                 if let userData = JSONResult.valueForKey(JSONResponseKeys.UserData) as? NSDictionary {
-                    println(userData)
+                    print(userData)
                     let firstName = userData[JSONResponseKeys.FirstName] as? String
                     let lastName = userData[JSONResponseKeys.LastName] as? String
                     //Pass first name & last name to vc using completion handler
